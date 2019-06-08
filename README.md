@@ -33,3 +33,10 @@ Hoge::mapped(&[0x2, 0x3, 0x4, 0x5, 0x6])
 
 `mapped` returns `None` if the argument length is not enough for the struct.
 It otherwise returns the tuple of the reference to the mapped struct and the rest of the data.
+
+We also have a inverse method for `mapped`, `as_bytes`. The usage is following.
+
+```rust
+let hoge = Hoge::mapped(&[0x2, 0x3, 0x4, 0x5, 0x6]).unwrap().0;
+assert!(hoge.as_bytes() == &[0x2, 0x3, 0x4, 0x5]);
+```
