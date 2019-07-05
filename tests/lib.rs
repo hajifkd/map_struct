@@ -15,7 +15,7 @@ unsafe impl Mappable for Hoge {}
 fn hoge_from_bytes() {
     assert_eq!(None, Hoge::mapped(&[0x21]));
 
-    let array: &[u8] = &[0x3, 0x15, 0xfe, 0x40];
+    let array: &mut [u8] = &mut [0x3, 0x15, 0xfe, 0x40];
     assert_eq!(
         Some((
             &Hoge {
@@ -28,7 +28,13 @@ fn hoge_from_bytes() {
         Hoge::mapped(array)
     );
 
-    let array2: &[u8] = &[0x27, 0x51, 0xe4, 0x13, 0x74];
+    {
+        let (hoge, _) = Hoge::mapped_mut(array).unwrap();
+        hoge.a = 0x5;
+    }
+    assert_eq!(array, &[0x5, 0x15, 0xfe, 0x40]);
+
+    let array2: &mut [u8] = &mut [0x27, 0x51, 0xe4, 0x13, 0x74];
     assert_eq!(
         Some((
             &Hoge {
@@ -40,6 +46,13 @@ fn hoge_from_bytes() {
         )),
         Hoge::mapped(array2)
     );
+
+    {
+        let (hoge, data) = Hoge::mapped_mut(array2).unwrap();
+        hoge.c = 0x1234;
+        data[0] = 0x01;
+    }
+    assert_eq!(array2, &[0x27, 0x51, 0x34, 0x12, 0x01]);
 }
 
 #[test]
@@ -58,7 +71,7 @@ fn hoge_inverse() {
 fn hoge_from_bytes() {
     assert_eq!(None, Hoge::mapped(&[0x21]));
 
-    let array: &[u8] = &[0x3, 0x15, 0xfe, 0x40];
+    let array: &mut [u8] = &mut [0x3, 0x15, 0xfe, 0x40];
     assert_eq!(
         Some((
             &Hoge {
@@ -71,7 +84,13 @@ fn hoge_from_bytes() {
         Hoge::mapped(array)
     );
 
-    let array2: &[u8] = &[0x27, 0x51, 0xe4, 0x13, 0x74];
+    {
+        let (hoge, _) = Hoge::mapped_mut(array).unwrap();
+        hoge.a = 0x5;
+    }
+    assert_eq!(array, &[0x5, 0x15, 0xfe, 0x40]);
+
+    let array2: &mut [u8] = &mut [0x27, 0x51, 0xe4, 0x13, 0x74];
     assert_eq!(
         Some((
             &Hoge {
@@ -83,4 +102,11 @@ fn hoge_from_bytes() {
         )),
         Hoge::mapped(array2)
     );
+
+    {
+        let (hoge, data) = Hoge::mapped_mut(array2).unwrap();
+        hoge.c = 0x1234;
+        data[0] = 0x01;
+    }
+    assert_eq!(array2, &[0x27, 0x51, 0x12, 0x34, 0x01]);
 }

@@ -8,7 +8,7 @@ In `Cargo.toml`,
 
 ```toml
 [dependencies]
-map_struct = "0.1"
+map_struct = "0.3"
 ```
 
 Implement unsafe `Mappable` trait to the struct to be mapped to a raw data:
@@ -33,8 +33,9 @@ Hoge::mapped(&[0x2, 0x3, 0x4, 0x5, 0x6])
 
 `mapped` returns `None` if the argument length is not enough for the struct.
 It otherwise returns the tuple of the reference to the mapped struct and the rest of the data.
+For `&mut [u8]`, we may also use `mapped_mut`, which returns `Option<(&mut Self, &mut [u8])>` instead.
 
-We also have a inverse method for `mapped`, `as_bytes`. The usage is following.
+We also provide a inverse method of `mapped`, `as_bytes`. The usage is following.
 
 ```rust
 let hoge = Hoge::mapped(&[0x2, 0x3, 0x4, 0x5, 0x6]).unwrap().0;
